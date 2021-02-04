@@ -1,5 +1,7 @@
 # Generate steward/stewee assignments
 
+https://ucsunited.github.io/assignment/
+
 In each text box, put one name per line and then hit "Assign!". That's it, really. Stewards need stewards, too! As such, they should be listed in staff as well.
 
 Each time you run this, it'll generate a new list. Nothing ever gets stored anywhere or saved in any way... but you can copy and paste the results after you run it yourself.
