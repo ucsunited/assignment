@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Stewing</title>
+	<style>
+		html { font-family: sans-serif; line-height: 1.5; }
+		section { max-width: 60rem; margin: 0 auto 1rem; padding: 1rem; }
+		label, span, textarea { width: 100%; display: block; }
+		label { margin-bottom: 1rem; }
+		text-area { font: sans-serif; }
+		button {
+			background-color: #07a;
+			color: #fff;
+			border: 0;
+			padding: 0.5rem;
+		}
+		button:hover {
+			background-color: #058;
+		}
+		#results {
+			background-color: #eee;
+			border: 1px solid #ccc;
+			white-space: pre;
+			min-height: 2rem;
+			padding: 0.5rem;
+			margin: 0.5rem -0.5rem;
+		}
+	</style>
+</head>
+<body>
+	<section>
+		<h1>Generate steward/stewee assignments</h1>
+		<p>In each text box, put one name per line and then hit "Assign!". That's it, really. Stewards need stewards, too! As such, they should be listed in staff as well.
+		<details>
+			<summary>Details, if you want</summary>
+			<p>Each time you run this, it'll generate a new list. Nothing ever gets stored anywhere or saved in any way... but you can copy and paste the results after you run it yourself.
+			<p>For each location group, add a list of stewards and the corresponding staff. You'll get a list of assignments, sorted by steward, below. This doesn't take potential managerial conflicts or other considerations into account (someone could end up as their own steward, for example), it's just a starting point.
+			<p>And once again, you'll get different results each time you use it. You can run a few tests to make sure you got the details formatted correctly, but it's on the honor system to say, "Ok, this is the one that counts."
+		</details>
+	</section>
+	<section id="c">
+		<label for="c-stew">
+			<span>Cambridge Stewards</span>
+			<textarea id="c-stew" placeholder="name1
+name2
+name3"></textarea>
+		</label>
+		<label for="c-staff">
+			<span>Cambridge Staff</span>
+			<textarea id="c-staff"></textarea>
+		</label>
+	</section>
+	<section id="d">
+		<label for="d-stew">
+			<span>DC Stewards</span>
+			<textarea id="d-stew"></textarea>
+		</label>
+		<label for="d-staff">
+			<span>DC Staff</span>
+			<textarea id="d-staff"></textarea>
+		</label>
+	</section>
+	<section id="o">
+		<label for="o-stew">
+			<span>Oakland / Chicago / remote Stewards</span>
+			<textarea id="o-stew"></textarea>
+		</label>
+		<label for="o-staff">
+			<span>Oakland / Chicago / remote Staff</span>
+			<textarea id="o-staff"></textarea>
+		</label>
+	</section>
+	<section>
+		<button id="assign">Assign!</button>
+		<div id="results"></div>
+	</section>
+	<script>
+		// initialize some variables
+		var buckets = [ "c", "d", "o" ];
+// var buckets = [ "c" ];
+		var destination = document.getElementById('results');
+		var button = document.getElementById('assign');
+
+		// create our randomizing function
+		function shuffle(a) {
+			var j, x, i;
+			for (i = a.length - 1; i > 0; i--) {
+				j = Math.floor(Math.random() * (i + 1));
+				x = a[i];
+				a[i] = a[j];
+				a[j] = x;
+			}
+			return a;
+		}
+
+		// do the thing!
+		function generate() {
+			// reset, in case someone runs it twice without refreshing.
+			destination.innerText = '';
+			// for each bucket, get the inputs
+			for ( var bucket of buckets ) {
+				var results = {};
+				var stewards = document.getElementById( bucket + '-stew').value.split("\n");
+				var staff = document.getElementById( bucket + '-staff').value.split("\n");
+				shuffle( staff );
+				// until all the staff are assigned
+				while( staff.length ) {
+					// assign a staff memeber to each steward
+					for( var steward of stewards ) {
+						// make sure we have a steward result
+						results[ "" + steward ] = results[ "" + steward ] || [];
+						// add the staff and take it out of the pool.
+						results[ "" + steward ].push( staff.pop() );
+					}
+				}
+console.log( results );
+				for( var result in results ) {
+					var steward = result;
+					var stewees = results[result].sort().join("\n\t");
+					destination.innerText += steward + "\n\t" + stewees + "\n\n";
+				}
+			}
+		}
+		
+		// Bind generate() to the button
+		button.addEventListener('click', generate);
+	</script>
+</body>
+</html>
